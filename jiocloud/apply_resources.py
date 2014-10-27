@@ -214,6 +214,6 @@ if __name__ == '__main__':
     elif args.action == 'ssh_config':
         apply_resources = ApplyResources()
         resources = apply_resources.read_resources(args.resource_file_path)
-        mappings = apply_resources.read_mappings(args.mappings or '/dev/null')
-        servers = apply_resources.generate_desired_servers(resources, args.project_tag)
+        mappings = args.mappings and apply_resources.read_mappings(args.mappings) or {}
+        servers = apply_resources.generate_desired_servers(resources, mappings, args.project_tag)
         print apply_resources.ssh_config(servers)
