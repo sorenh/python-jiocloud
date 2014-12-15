@@ -84,6 +84,13 @@ def create_node(ironic, username, password, address, mac, total_memory, total_co
     port = ironic.port.create(address=mac, node_uuid=node.uuid)
     print(port.uuid)
 
+def get_port_by_mac(ironic, mac):
+    p('Looking up port in Ironic... ',)
+    port = None
+    for _port in ironic.port.list():
+        if _port.address.lower() == mac:
+            return port
+
 def main(argv=sys.argv):
     parser = argparse.ArgumentParser(description='Enroll HP server to Ironic.')
     parser.add_argument('--ilo_username', type=str,
@@ -136,13 +143,8 @@ def main(argv=sys.argv):
         return True
     ironic = get_ironic_client(args.os_username, args.os_password,
                                 args.os_auth_url, args.os_tenant)
+    port = get_port_by_mac(ironic, mac)
     if args.delete:
-        p('Looking up port in Ironic... ',)
-        port = None
-        for _port in ironic.port.list():
-            if _port.address.lower() == mac:
-                port = _port
-                break
         if port is None:
             raise Exception('Could not find port')
         port = ironic.port.get(port.uuid)
@@ -163,6 +165,9 @@ def main(argv=sys.argv):
         ironic.chassis.delete(chassis.uuid)
         print('deleted.')
     else:
+        if port is not None:
+            p('Node seems to already exist')
+            return
         print('Adding to Ironic')
         create_node(ironic, args.ilo_username, args.ilo_password, args.ilo_address, mac, total_memory, total_cores)
 
