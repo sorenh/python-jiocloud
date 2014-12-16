@@ -86,10 +86,9 @@ def create_node(ironic, username, password, address, mac, total_memory, total_co
 
 def get_port_by_mac(ironic, mac):
     p('Looking up port in Ironic... ',)
-    port = None
     for _port in ironic.port.list():
         if _port.address.lower() == mac:
-            return port
+            return _port
 
 def main(argv=sys.argv):
     parser = argparse.ArgumentParser(description='Enroll HP server to Ironic.')
