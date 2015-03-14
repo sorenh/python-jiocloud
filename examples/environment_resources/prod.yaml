@@ -11,3 +11,11 @@ resources:
     image: ubuntu12.04
     networks:
       - ed1755a0-1f0b-47b9-b9ec-6ef5cbb77c61
+
+  baz:             
+    number: 3      
+    flavor: m1.medium
+    image: ubuntu12.04                      
+    boot_volume: 50
+    networks:      
+      - ed1755a0-1f0b-47b9-b9ec-6ef5cbb77c61
