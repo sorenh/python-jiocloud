@@ -87,8 +87,8 @@ class ApplyResources(object):
             time.sleep(5)
             for id in ids:
                 instance = nova_client.servers.get(id)
-                print "%s (%s): %s" % (instance.name, id, instance.status)
                 if instance.status != 'BUILD':
+                    print "%s (%s): %s" % (instance.name, id, instance.status)
                     done.add(id)
             ids = ids.difference(done)
 
@@ -105,6 +105,7 @@ class ApplyResources(object):
                       name,
                       flavor,
                       image,
+                      boot_volume=False,
                       config_drive=False,
                       networks=None,
                       **keys):
@@ -113,11 +114,19 @@ class ApplyResources(object):
         self._images[image] = self._images.get(image, nova_client.images.get(image))
         self._flavors[flavor] = self._flavors.get(flavor, nova_client.flavors.get(flavor))
         net_list = networks and ([{'net-id': n} for n in networks])
+        if boot_volume:
+          image_name=None
+          bdm_v2=[{'source_type': 'image','uuid': image,'destination_type': 'volume','volume_size': boot_volume,'delete_on_termination': 'true','boot_index': '0'}]
+        else:
+          image_name=self._images[image]
+          bdm_v2=None
+
         instance = nova_client.servers.create(
           name=name,
-          image=self._images[image],
+          image=image_name,
           flavor=self._flavors[flavor],
           nics=net_list,
+          block_device_mapping_v2=bdm_v2,
           userdata=userdata_file,
           key_name=key_name,
           config_drive=config_drive,
