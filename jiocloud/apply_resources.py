@@ -95,7 +95,7 @@ class ApplyResources(object):
         for server_id in floating_ip_servers:
             ip = nova_client.floating_ips.create()
             instance = nova_client.servers.get(server_id)
-            print "Assigning %s to %s (%s)" % (ip.ip, instance.name, id)
+            print "Assigning %s to %s (%s)" % (ip.ip, instance.name, server_id)
             instance.add_floating_ip(ip.ip)
 
 
@@ -132,6 +132,7 @@ class ApplyResources(object):
           config_drive=config_drive,
         )
 
+        print "Created server %s (%s)" % (name, instance.id)
         return instance.id
 
     def delete_servers(self, project_tag):
