@@ -90,6 +90,17 @@ class ApplyResources(object):
                 if instance.status != 'BUILD':
                     print "%s (%s): %s" % (instance.name, id, instance.status)
                     done.add(id)
+                if instance.status == 'ERROR':
+                    print "Rebuilding server %s" % instance.name
+
+                    ##
+                    # delete_server may take some time to delete, and may fail,
+                    # but that should be fine as that machine will never come
+                    # up. TODO: there should be a retry count parameter
+                    ##
+                    delete_server(id)
+                    server_id = self.create_server(userdata_file, key_name, **s)
+                    map(lambda i:i if i != id else server_id ,ids)
             ids = ids.difference(done)
 
         for server_id in floating_ip_servers:
@@ -147,11 +158,16 @@ class ApplyResources(object):
                 ip = ip_to_server_map[uuid]
                 server.remove_floating_ip(ip.ip)
                 ips_to_delete.add(ip)
-            server.delete()
+            delete_server(uuid)
 
         for ip in ips_to_delete:
             print "Deleting floating ip: %s" % (ip.ip,)
             ip.delete()
+
+    def delete_server(self,server_id):
+        nova_client = self.get_nova_client()
+        server = nova_client.servers.get(server_id)
+        server.delete()
 
     def ssh_config(self, servers):
         out = ''
