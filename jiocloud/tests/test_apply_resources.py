@@ -152,7 +152,7 @@ class TestApplyResources(unittest.TestCase):
             apply_resources.create_servers([{'name': 'foo1', 'networks':  ['someid']},
                                             {'name': 'foo2', 'networks':  ['someid']},
                                             {'name': 'foo3', 'assign_floating_ip': True}
-                                            ], 'somefile', 'somekey')
+                                            ], 'somefile', 'somekey',0)
 
             create_server.assert_any_call(mock.ANY, 'somekey', name='foo1', networks=['someid'])
             create_server.assert_any_call(mock.ANY, 'somekey', name='foo2', networks=['someid'])
