@@ -108,8 +108,8 @@ class ApplyResources(object):
                     ids.discard(id)
                     ids.add(server_id)
                     if servers_dict[instance.name].has_key('assign_floating_ip'):
-                      floating_ip_servers.discard(id)
-                      floating_ip_servers.add(server_id)
+                        floating_ip_servers.discard(id)
+                        floating_ip_servers.add(server_id)
                 elif instance.status != 'BUILD':
                     print "%s (%s): %s" % (instance.name, id, instance.status)
                     done.add(id)
@@ -212,7 +212,7 @@ if __name__ == '__main__':
     apply_parser.add_argument('--mappings', help='Path to mappings file')
     apply_parser.add_argument('--project_tag', help='Project tag')
     apply_parser.add_argument('--key_name', help='Name of key pair')
-    apply_parser.add_argument('--retry', help='Retry machine boot in case of failures')
+    apply_parser.add_argument('--retry', type=int, help='Retry machine boot in case of failures')
     apply_parser.add_argument('--override_instance_number', help='Override number of instances of a type. Values is e.g. "cp=5:ct=2" to start 5 cp nodes, 2 ct nodes and go with defaults for the rest')
 
     delete_parser = subparsers.add_parser('delete', help='Delete a project')
