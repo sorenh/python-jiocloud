@@ -8,3 +8,6 @@ tornado
 python-hpilo
 python-ironicclient
 urllib3
+pyopenssl
+ndg-httpsclient
+pyasn1
