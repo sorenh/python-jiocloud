@@ -154,9 +154,9 @@ class TestApplyResources(unittest.TestCase):
                                             {'name': 'foo3', 'assign_floating_ip': True}
                                             ], 'somefile', 'somekey',0)
 
-            create_server.assert_any_call(mock.ANY, 'somekey', name='foo1', networks=['someid'])
-            create_server.assert_any_call(mock.ANY, 'somekey', name='foo2', networks=['someid'])
-            create_server.assert_any_call(mock.ANY, 'somekey', name='foo3', assign_floating_ip=True)
+            create_server.assert_any_call(mock.ANY, 'somekey', retry=0, name='foo1', networks=['someid'])
+            create_server.assert_any_call(mock.ANY, 'somekey', retry=0, name='foo2', networks=['someid'])
+            create_server.assert_any_call(mock.ANY, 'somekey', retry=0, name='foo3', assign_floating_ip=True)
 
             for call in create_server.call_args_list:
                 self.assertEquals(call[0][0].read(), 'test user data')

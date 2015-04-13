@@ -68,7 +68,7 @@ class ApplyResources(object):
         desired_servers = self.generate_desired_servers(resources, mappings, project_tag, number_overrides=number_overrides)
         return [elem for elem in desired_servers if elem['name'] not in existing_servers ]
 
-    def create_servers(self, servers, userdata, key_name=None, num_retry=-1):
+    def create_servers(self, servers, userdata, key_name=None, num_retry=None):
 
         ids = set()
         floating_ip_servers = set()
@@ -93,7 +93,7 @@ class ApplyResources(object):
                 instance = nova_client.servers.get(id)
                 print "%s - %s - %s" % (instance.name, id, instance.status)
                 if  instance.status == 'ERROR' and \
-                    ( num_retry == -1 or servers_dict[instance.name]['retry'] <= num_retry) :
+                    ( num_retry is None or servers_dict[instance.name]['retry'] < num_retry) :
                     print "Rebuilding server %s(%s)" % (instance.name, id)
 
                     ##
