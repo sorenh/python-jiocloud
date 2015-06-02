@@ -96,11 +96,23 @@ class DeploymentOrchestrator(object):
                 self.consul.agent.check.ttl_warn('puppet')
             else:
                 self.consul.agent.check.ttl_pass('puppet')
+        elif status_type == 'puppet_service':
+            if int(status_result) in (4, 6, 1):
+                self.consul.agent.check.ttl_fail('service:puppet')
+            elif int(status_result) == -1:
+                self.consul.agent.check.ttl_fail('service:puppet')
+            else:
+                self.consul.agent.check.ttl_pass('service:puppet')
         elif status_type == 'validation':
             if int(status_result) == 0:
                 self.consul.agent.check.ttl_pass('validation')
             else:
                 self.consul.agent.check.ttl_warn('validation')
+        elif status_type == 'validation_service':
+            if int(status_result) == 0:
+                self.consul.agent.check.ttl_pass('service:validation')
+            else:
+                self.consul.agent.check.ttl_fail('service:validation')
         else:
             raise Exception('Invalid status_type:%s' % status_type)
 
